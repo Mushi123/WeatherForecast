@@ -42,7 +42,7 @@
 # ENTRYPOINT ["dotnet", "Samples.WeatherForecast.Api.dll"]
 
 
-ARG VERSION=5.0-alpine
+ARG VERSION=5.0-buster-slim
 
 FROM mcr.microsoft.com/dotnet/sdk:${VERSION} AS build
 WORKDIR /app
