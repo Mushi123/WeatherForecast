@@ -20,23 +20,52 @@
 # COPY --from=publish /app/publish .
 # ENTRYPOINT ["dotnet", "Samples.WeatherForecast.Api.dll"]
 
-FROM mcr.microsoft.com/dotnet/aspnet:5.0-focal AS base
-WORKDIR /app
-EXPOSE 80
+# FROM mcr.microsoft.com/dotnet/aspnet:5.0-focal AS base
+# WORKDIR /app
+# EXPOSE 80
 
-ENV ASPNETCORE_URLS=http://+:80
+# ENV ASPNETCORE_URLS=http://+:80
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0-focal AS build
+# FROM mcr.microsoft.com/dotnet/sdk:5.0-focal AS build
+# WORKDIR /app
+# COPY . .
+# WORKDIR "/app/src/Samples.WeatherForecast.Api"
+# RUN dotnet restore "Samples.WeatherForecast.Api.csproj"
+# RUN dotnet build "Samples.WeatherForecast.Api.csproj" -c Release -o /app/build --no-restore
+
+# FROM build AS publish
+# RUN dotnet publish "Samples.WeatherForecast.Api.csproj" -c Release -o /app/publish
+
+# FROM base AS final
+# WORKDIR /app
+# COPY --from=publish /app/publish .
+# ENTRYPOINT ["dotnet", "Samples.WeatherForecast.Api.dll"]
+
+
+ARG VERSION=5.0-alpine
+
+FROM mcr.microsoft.com/dotnet/sdk:${VERSION} AS build
 WORKDIR /app
+
+# Copy and restore as distinct layers
 COPY . .
-WORKDIR "/app/src/Samples.WeatherForecast.Api"
-RUN dotnet restore "Samples.WeatherForecast.Api.csproj"
-RUN dotnet build "Samples.WeatherForecast.Api.csproj" -c Release -o /app/build --no-restore
+WORKDIR /app/src/Samples.WeatherForecast.Api
+RUN dotnet restore Samples.WeatherForecast.Api.csproj -r linux-musl-x64
 
 FROM build AS publish
-RUN dotnet publish "Samples.WeatherForecast.Api.csproj" -c Release -o /app/publish
+RUN dotnet publish \
+    -c Release \
+    -o /out \
+    -r linux-musl-x64 \
+    --self-contained=true \
+    --no-restore \
+    -p:PublishReadyToRun=true \
+    -p:PublishTrimmed=true
 
-FROM base AS final
+# Final stage/image
+FROM mcr.microsoft.com/dotnet/runtime-deps:${VERSION}
 WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Samples.WeatherForecast.Api.dll"]
+COPY --from=publish /out .
+
+EXPOSE 80
+ENTRYPOINT ["./Samples.WeatherForecast.Api"]
