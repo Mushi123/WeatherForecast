@@ -7,6 +7,6 @@ services:
     image: samplesweatherforecastapi
     build:
       context: .
-      dockerfile: src/Samples.WeatherForecast.Api/Dockerfile
+      dockerfile: ./Dockerfile
     ports:
       - 80:80
