@@ -21,7 +21,7 @@ jobs:
           qemu-version: latest
       
       - name: Build docker image
-        run: docker buildx build --platform linux/arm64 . -t ${{ env.image-name }} --output "type=image,push=false"
+        run: docker buildx build --platform linux/arm64 --tag ${{ env.image-name }} --output "type=image,push=false" --file . .
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
@@ -30,4 +30,5 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GH_CR }}
       - name: Push docker image
-        run: docker push ${{ env.image-name }}
+        run: docker push ${{env.image-name}}
+          # docker buildx build --platform linux/arm64 --tag ${{ env.image-name }} --output "type=image,push=true" --file . .
