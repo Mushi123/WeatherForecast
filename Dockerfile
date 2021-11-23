@@ -63,7 +63,7 @@ RUN dotnet publish \
     -p:PublishTrimmed=true
 
 # Final stage/image
-FROM --platform linux/arm64 mcr.microsoft.com/dotnet/runtime-deps:${VERSION}
+FROM mcr.microsoft.com/dotnet/runtime-deps:${VERSION}
 WORKDIR /app
 COPY --from=publish /out .
 
