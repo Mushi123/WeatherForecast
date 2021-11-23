@@ -42,7 +42,7 @@
 # ENTRYPOINT ["dotnet", "Samples.WeatherForecast.Api.dll"]
 
 
-ARG VERSION=5.0-bullseye-slim
+ARG VERSION=6.0-buster-slim
 
 FROM mcr.microsoft.com/dotnet/sdk:${VERSION} AS build
 WORKDIR /app
@@ -68,5 +68,4 @@ WORKDIR /app
 COPY --from=publish /out .
 
 EXPOSE 80
-CMD [ "ls" ]
 ENTRYPOINT ["./Samples.WeatherForecast.Api"]
