@@ -5,7 +5,7 @@ on:
   pull_request:
     branches: [ main ]
 env:
-  image-name: ghcr.io/mushi123/WeatherForecast:${{ github.sha }}
+  image-name: ghcr.io/mushi123/weatherforecast:${{ github.sha }}
 jobs:
   build:
     runs-on: ubuntu-latest
