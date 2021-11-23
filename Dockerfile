@@ -42,7 +42,7 @@
 # ENTRYPOINT ["dotnet", "Samples.WeatherForecast.Api.dll"]
 
 
-ARG VERSION=5.0-buster-slim
+ARG VERSION=5.0-bullseye-slim
 
 FROM mcr.microsoft.com/dotnet/sdk:${VERSION} AS build
 WORKDIR /app
@@ -50,13 +50,13 @@ WORKDIR /app
 # Copy and restore as distinct layers
 COPY . .
 WORKDIR /app/src/Samples.WeatherForecast.Api
-RUN dotnet restore Samples.WeatherForecast.Api.csproj -r linux-arm64
+RUN dotnet restore Samples.WeatherForecast.Api.csproj -r linux-amd64
 
 FROM build AS publish
 RUN dotnet publish \
     -c Release \
     -o /out \
-    -r linux-arm64 \
+    -r linux-amd64 \
     --self-contained=true \
     --no-restore \
     -p:PublishReadyToRun=true \
