@@ -50,13 +50,13 @@ WORKDIR /app
 # Copy and restore as distinct layers
 COPY . .
 WORKDIR /app/src/Samples.WeatherForecast.Api
-RUN dotnet restore Samples.WeatherForecast.Api.csproj -r linux-arm64
+RUN dotnet restore Samples.WeatherForecast.Api.csproj -r linux-musl-x64
 
 FROM build AS publish
 RUN dotnet publish \
     -c Release \
     -o /out \
-    -r linux-arm64 \
+    -r linux-musl-x64 \
     --self-contained=true \
     --no-restore \
     -p:PublishReadyToRun=true \
@@ -68,4 +68,4 @@ WORKDIR /app
 COPY --from=publish /out .
 
 EXPOSE 80
-ENTRYPOINT ["./Samples.WeatherForecast.Api"]
+ENTRYPOINT ["Samples.WeatherForecast.Api"]
