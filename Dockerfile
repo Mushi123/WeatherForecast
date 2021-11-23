@@ -68,4 +68,5 @@ WORKDIR /app
 COPY --from=publish /out .
 
 EXPOSE 80
-ENTRYPOINT [".\Samples.WeatherForecast.Api"]
+CMD [ "ls" ]
+ENTRYPOINT ["./Samples.WeatherForecast.Api"]
